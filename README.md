@@ -63,6 +63,8 @@ python specimens/example_2024_12_19_synthetic_demo/protocol.py
 # - strata/activations.zarr (synthetic activations: 100x512)
 ```
 
+**Note**: Generated artifacts (`*.zarr/`, `vault.duckdb`) are excluded from git (see `.gitignore`). This is by design - you generate them by running experiments and indexing.
+
 ### 3. Create Your Own Specimen
 
 ```bash

@@ -65,8 +65,15 @@ class SpecimenStorage:
                     # For higher dimensions, chunk along first two dims
                     chunks = tuple(min(1000, s) for s in array.shape[:2]) + array.shape[2:]
             
-            # Save as Zarr with chunking
-            zarr.save_array(str(tensor_path), array, chunks=chunks)
+            # Save as Zarr with chunking using zarr.open_array
+            z = zarr.open_array(
+                str(tensor_path),
+                mode='w',
+                shape=array.shape,
+                chunks=chunks,
+                dtype=array.dtype
+            )
+            z[:] = array
             
             return tensor_path
         except Exception as e:

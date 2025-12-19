@@ -62,11 +62,18 @@ class VaultQuery:
     def search(self, sql: str) -> pl.DataFrame:
         """●METHOD|input:str|output:DataFrame|operation:execute_sql_return_polars_df"""
         try:
-            # Execute SQL query and return as Polars DataFrame
-            result = self.conn.execute(sql).fetchdf()
+            # Execute SQL query and get results
+            result = self.conn.execute(sql).fetchall()
             
-            # Convert pandas DataFrame to Polars DataFrame
-            return pl.from_pandas(result)
+            # Get column names
+            if result:
+                columns = [desc[0] for desc in self.conn.description]
+                # Create Polars DataFrame from results
+                return pl.DataFrame(result, schema=columns, orient="row")
+            else:
+                # Return empty DataFrame with proper columns
+                columns = [desc[0] for desc in self.conn.description]
+                return pl.DataFrame(schema=columns)
         except Exception as e:
             raise RuntimeError(f"Failed to execute SQL query: {e}")
     
@@ -100,9 +107,13 @@ class VaultQuery:
             
             # Execute union query
             query = " UNION ALL ".join(union_parts)
-            result = self.conn.execute(query).fetchdf()
+            result = self.conn.execute(query).fetchall()
             
-            return pl.from_pandas(result)
+            if result:
+                columns = [desc[0] for desc in self.conn.description]
+                return pl.DataFrame(result, schema=columns, orient="row")
+            else:
+                return pl.DataFrame()
         except Exception as e:
             # If error (e.g., no 'tags' column), return empty DataFrame gracefully
             print(f"Warning: Failed to find specimens by tag '{tag}': {e}")

@@ -11,8 +11,8 @@ import msgpack
 
 def scan_manifests(specimens_dir: Path) -> Tuple[List[Dict], List[str]]:
     """●METHOD|input:Path|output:tuple[list_dict_list_str]|operation:load_all_manifests_log_errors"""
-    manifests = []
-    warnings = []
+    manifests: List[Dict] = []
+    warnings: List[str] = []
     
     if not specimens_dir.exists():
         warnings.append(f"Specimens directory not found: {specimens_dir}")

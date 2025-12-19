@@ -5,3 +5,4 @@ __pycache__/
 *.zarr/
 .venv/
 *.egg-info/
+venv/

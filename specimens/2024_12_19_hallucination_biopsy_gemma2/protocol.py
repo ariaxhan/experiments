@@ -358,13 +358,13 @@ def analyze_batch(
         _, cache_fact = model.run_with_cache(tokens_fact)
         act_fact = cache_fact["blocks.5.hook_resid_post"][0, -1, :]
         feat_fact = sae.encode(act_fact.unsqueeze(0)).squeeze()
-        fact_activations[i, :] = feat_fact.cpu().numpy()
+        fact_activations[i, :] = feat_fact.detach().cpu().numpy()
         
         tokens_hall = model.to_tokens(exp['hallucination'])
         _, cache_hall = model.run_with_cache(tokens_hall)
         act_hall = cache_hall["blocks.5.hook_resid_post"][0, -1, :]
         feat_hall = sae.encode(act_hall.unsqueeze(0)).squeeze()
-        hall_activations[i, :] = feat_hall.cpu().numpy()
+        hall_activations[i, :] = feat_hall.detach().cpu().numpy()
         
         print(f"    ✓ Unique features: {len(loudest_indices)}")
         if loudest_indices:

@@ -71,7 +71,29 @@ For each pair:
 3. Rank by activation magnitude (loudest features first)
 4. Decode feature meanings via vocabulary projection
 
-## Querying Results
+## Viewing Results
+
+### Quick Stats (Fastest)
+
+```bash
+# Quick one-page summary
+python quick_stats.py
+```
+
+### Full Analysis (Recommended)
+
+```bash
+# Comprehensive analysis with statistics and rankings
+python analyze_results.py
+```
+
+This will show:
+- Full results table
+- Summary statistics (feature counts, energy metrics)
+- Experiment rankings
+- Top biomarker features per experiment
+- Tensor data information
+- Sparsity analysis
 
 ### Index the Vault
 

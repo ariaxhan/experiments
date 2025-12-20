@@ -181,10 +181,22 @@ experiments/
 │  │     └─ activations.zarr/          # Tensor data (chunked arrays)
 │  └─ [more specimens...]
 │
+├─ engines/                            # Analysis engines (one per subdirectory)
+│  ├─ universal_spectroscopy/          # SAE-based feature analysis engine
+│  │  ├─ __init__.py
+│  │  ├─ engine.py                     # Main orchestrator
+│  │  ├─ excitation.py                 # Input processing
+│  │  ├─ sae_adapter.py                # SAE loading
+│  │  ├─ interference.py               # Spectral analysis
+│  │  ├─ spectrum.py                   # Data structures
+│  │  └─ utils.py                      # Utilities
+│  └─ [future engines...]
+│
 ├─ protocols/                          # Shared utilities (importable Python package)
 │  ├─ __init__.py
 │  ├─ storage.py                       # SpecimenStorage: write/read Parquet/Zarr
-│  └─ query.py                         # VaultQuery: SQL search across specimens
+│  ├─ query.py                         # VaultQuery: SQL search across specimens
+│  └─ vn_test_cases.py                 # Test case library
 │
 ├─ scripts/                            # Automation tools (executable)
 │  ├─ create_specimen.py               # Scaffold new experiment directory
@@ -197,6 +209,8 @@ experiments/
 
 **Key Principles**:
 - **specimens/**: Append-only. Never modify existing specimens. Create new ones for variations.
+- **engines/**: Each engine in its own subdirectory with complete implementation. Import as `from engines.engine_name import ...`
+- **protocols/**: Shared utilities (storage, querying, test cases). Import as `from protocols import ...`
 - **strata/**: Name comes from geology (layers of data). Auto-created by SpecimenStorage.
 - **vault.duckdb**: Rebuilt by `index_vault.py`. Queries specimens without copying data.
 

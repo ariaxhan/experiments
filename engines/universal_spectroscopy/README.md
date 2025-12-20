@@ -2,8 +2,6 @@
 
 A framework treating LLM activations as light spectra to measure semantic drift and hallucinations.
 
-**Note**: This is a port of the Universal Spectroscopy Engine from the `universal-spectroscopy-engine` repository, integrated into the experiments repository for use in ML research experiments.
-
 ## Overview
 
 The Universal Spectroscopy Engine (USE) is a spectroscopy-inspired framework that treats Large Language Model (LLM) activations as physical light spectra. This novel approach enables the diagnosis of semantic drift, hallucinations, and model blindness locally, providing interpretable insights into model behavior.

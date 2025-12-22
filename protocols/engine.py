@@ -59,22 +59,13 @@ class UniversalSpectroscopyEngine:
         self.sae_adapter = SAE_Adapter(device=self.device)
         self.interference_engine = InterferenceEngine()
     
-    def load_model(
-        self, 
-        model_name: str, 
-        use_cache: bool = True,
-        dtype: Optional[torch.dtype] = None,
-        low_cpu_mem_usage: bool = True
-    ) -> None:
+    def load_model(self, model_name: str, use_cache: bool = True) -> None:
         """
         Load LLM model using transformer_lens.
         
         Args:
             model_name: Name of the model (e.g., "gemma-2-2b")
             use_cache: If True, use cached model if available (default: True)
-            dtype: Optional dtype for model weights (e.g., torch.float16, torch.bfloat16).
-                   If None, auto-selects based on device capabilities.
-            low_cpu_mem_usage: If True, uses less CPU memory during loading (faster, default: True)
             
         Raises:
             ValueError: If model cannot be loaded
@@ -90,33 +81,9 @@ class UniversalSpectroscopyEngine:
         
         try:
             print(f"Loading model {model_name} (this may take a while)...")
-            
-            # Auto-select dtype if not specified
-            if dtype is None:
-                if self.device.type == "mps":
-                    # MPS supports float16 natively
-                    dtype = torch.float16
-                elif self.device.type == "cuda":
-                    # CUDA supports bfloat16 (better precision) or float16
-                    dtype = torch.bfloat16
-                else:
-                    # CPU - use default (float32)
-                    dtype = None
-            
-            # Build loading kwargs
-            load_kwargs = {
-                "device": self.device,
-                "low_cpu_mem_usage": low_cpu_mem_usage,
-                "center_unembed": False,  # Explicitly set to avoid warning
-            }
-            
-            # Add dtype if specified (skip for CPU as it may not support it)
-            if dtype is not None and self.device.type != "cpu":
-                load_kwargs["dtype"] = dtype
-            
             self.model = HookedTransformer.from_pretrained(
                 model_name,
-                **load_kwargs
+                device=self.device
             )
             self.model_name = model_name
             
@@ -304,4 +271,6 @@ class UniversalSpectroscopyEngine:
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit - cleanup resources."""
         self.cleanup()
+
+
 

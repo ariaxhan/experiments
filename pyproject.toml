@@ -17,4 +17,4 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["protocols", "scripts", "engines", "engines.universal_spectroscopy"]
+packages = ["protocols", "scripts", "engines", "engines.universal_spectroscopy", "tests"]

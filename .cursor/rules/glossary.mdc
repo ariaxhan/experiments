@@ -1,0 +1,311 @@
+---
+description: Domain Glossary: Physics of Meaning → Code Implementation
+alwaysApply: false
+---
+# Domain Glossary: Physics of Meaning → Code Implementation
+
+## Core Physics Metaphors
+
+### Light Source → User Input / Prompt
+
+**Code Mapping**:
+
+- Variable: `input_text`, `prompt`, `user_input`
+- Type: `str` or `List[str]`
+- Context: Input to `ExcitationController.process()`
+
+**Usage**:
+
+```python
+excitation_controller = ExcitationController()
+spectrum = excitation_controller.process(input_text="Analyze this text")
+```
+
+### Material → The LLM Model
+
+**Code Mapping**:
+
+- Variable: `model`, `llm`, `transformer`
+- Type: `HookedTransformer` (from transformer_lens)
+- Context: Loaded model instance in `UniversalSpectroscopyEngine`
+
+**Usage**:
+
+```python
+from transformer_lens import HookedTransformer
+model = HookedTransformer.from_pretrained("llama-3-8b")
+```
+
+### Prism → Sparse Autoencoder (SAE)
+
+**Code Mapping**:
+
+- Variable: `sae`, `autoencoder`, `prism`
+- Type: `SAE` (from sae_lens)
+- Context: Loaded SAE in `SAE_Adapter`
+
+**Usage**:
+
+```python
+from sae_lens import SAE
+sae = SAE.from_pretrained("model_name", layer=5)
+```
+
+### Spectrum → Feature Activations
+
+**Code Mapping**:
+
+- Variable: `spectrum`, `spec`, `activation_spectrum`
+- Type: `Spectrum` (dataclass)
+- Structure: `{wavelengths: Tensor, intensities: Tensor, ...}`
+
+**Usage**:
+
+```python
+from use.spectrum import Spectrum
+spectrum = Spectrum(
+    wavelengths=torch.tensor([1, 2, 3]),
+    intensities=torch.tensor([0.8, 0.6, 0.4]),
+    model_name="llama-3-8b",
+    layer=5
+)
+```
+
+### Spectral Lines → Monosemantic Features
+
+**Code Mapping**:
+
+- Variable: `features`, `monosemantic_features`, `peaks`
+- Type: `List[int]` (feature indices) or `torch.Tensor`
+- Context: Distinct, interpretable concepts in the spectrum
+
+**Usage**:
+
+```python
+top_features = spectrum.get_top_features(k=10)  # Top 10 monosemantic features
+```
+
+### Thermal Noise → Polysemantic/Dense Activations
+
+**Code Mapping**:
+
+- Variable: `noise`, `polysemantic_activations`, `dense_features`
+- Type: `torch.Tensor`
+- Context: Low-intensity, non-distinct activations
+
+**Usage**:
+
+```python
+noise_threshold = 0.1
+noise_mask = spectrum.intensities < noise_threshold
+```
+
+## Component Names
+
+### The Slit → ExcitationController
+
+**Purpose**: Manages input formatting and feature steering
+**File**: `src/use/excitation.py`
+**Class**: `ExcitationController`
+
+**Key Methods**:
+
+- `process(input_text: str) -> Spectrum`: Main processing method
+- `monochromatic_steering(features: List[int])`: Force specific features
+- `pulse_train(noise_level: float)`: Inject noise
+
+### The Prism → SAE_Adapter
+
+**Purpose**: Loads SAEs and normalizes outputs to Spectrum format
+**File**: `src/use/sae_adapter.py`
+**Class**: `SAE_Adapter`
+
+**Key Methods**:
+
+- `load_sae(model_name: str, layer: int) -> SAE`: Load SAE
+- `decompose(activations: torch.Tensor) -> Spectrum`: Convert to spectrum
+- `normalize(spectrum: Spectrum) -> Spectrum`: Standardize format
+
+### The Detector → InterferenceEngine
+
+**Purpose**: Mathematical analysis of spectra
+**File**: `src/use/interference.py`
+**Class**: `InterferenceEngine`
+
+**Key Methods**:
+
+- `calculate_purity(spectrum: Spectrum) -> float`: H1 implementation
+- `calculate_drift(spec_a: Spectrum, spec_b: Spectrum) -> float`: H2 implementation
+- `detect_absorption(input_spec: Spectrum, output_spec: Spectrum) -> List[int]`: H3 implementation
+
+## Hypothesis Terminology
+
+### H1: Spectral Purity → Hallucination Detection
+
+**Code Mapping**:
+
+- Method: `InterferenceEngine.calculate_purity()`
+- Returns: `float` (0.0 to 1.0, higher = more pure)
+- Metric: Signal-to-noise ratio, entropy-based measure
+
+**Usage**:
+
+```python
+purity = interference_engine.calculate_purity(spectrum)
+if purity < 0.3:
+    print("Warning: Low spectral purity - possible hallucination")
+```
+
+### H2: Doppler Shift → Semantic Drift
+
+**Code Mapping**:
+
+- Method: `InterferenceEngine.calculate_drift()`
+- Returns: `float` (drift magnitude, 0.0 = no drift)
+- Metric: Cosine similarity or IoU of top-k features
+
+**Usage**:
+
+```python
+drift = interference_engine.calculate_drift(input_spec, output_spec)
+if drift > 0.5:
+    print("Significant semantic drift detected")
+```
+
+### H3: Absorption → Model Blindness
+
+**Code Mapping**:
+
+- Method: `InterferenceEngine.detect_absorption()`
+- Returns: `List[int]` (absorbed feature indices)
+- Metric: Features present in input but absent in output
+
+**Usage**:
+
+```python
+absorbed_features = interference_engine.detect_absorption(
+    input_spec, output_spec
+)
+if absorbed_features:
+    print(f"Model ignored features: {absorbed_features}")
+```
+
+## Technical Terms
+
+### Wavelengths
+
+**Code Mapping**: Feature indices in the SAE dictionary
+
+- Variable: `wavelengths`, `feature_indices`, `indices`
+- Type: `torch.Tensor` of `int64`
+- Context: Which features are active
+
+### Intensities
+
+**Code Mapping**: Activation magnitudes
+
+- Variable: `intensities`, `magnitudes`, `activations`
+- Type: `torch.Tensor` of `float32`
+- Context: How strongly features are activated
+
+### Device
+
+**Code Mapping**: Compute device (MPS/CUDA/CPU)
+
+- Variable: `device`
+- Type: `torch.device`
+- Detection: Automatic via `get_device()` utility
+
+### VRAM
+
+**Code Mapping**: GPU memory management
+
+- Context: Model and SAE loading/unloading
+- Pattern: Use context managers for cleanup
+
+### .spec Format
+
+**Code Mapping**: Standardized spectrum serialization
+
+- Structure: JSON with `wavelengths`, `intensities`, `model`, `layer`, `metadata`
+- Method: `Spectrum.to_spec_dict()`
+
+## Variable Naming Conventions
+
+### Spectra Variables
+
+- `spectrum`, `spec` → Single spectrum object
+- `input_spec`, `output_spec` → Comparison spectra
+- `spec_a`, `spec_b` → Generic comparison spectra
+
+### Model Variables
+
+- `model` → LLM instance
+- `sae` → Sparse Autoencoder instance
+- `model_name` → String identifier (e.g., "llama-3-8b")
+
+### Feature Variables
+
+- `features` → List of feature indices
+- `top_k_features` → Top k features by intensity
+- `feature_indices` → Explicit indices
+- `activations` → Raw activation tensor
+
+### Analysis Variables
+
+- `purity` → Spectral purity score
+- `drift` → Semantic drift magnitude
+- `absorbed` → List of absorbed feature indices
+- `threshold` → Cutoff value for filtering
+
+## File and Module Naming
+
+### Source Files
+
+- `engine.py` → Main `UniversalSpectroscopyEngine` class
+- `excitation.py` → `ExcitationController` (The Slit)
+- `sae_adapter.py` → `SAE_Adapter` (The Prism)
+- `interference.py` → `InterferenceEngine` (The Detector)
+- `spectrum.py` → `Spectrum` data class
+- `utils.py` → Utility functions (device detection, etc.)
+
+### Test Files
+
+- `test_engine.py` → Tests for main engine
+- `test_excitation.py` → Tests for ExcitationController
+- `test_interference.py` → Tests for InterferenceEngine
+- `test_spectrum.py` → Tests for Spectrum class
+
+## Common Patterns
+
+### Loading Pattern
+
+```python
+# Load model and SAE
+engine = UniversalSpectroscopyEngine()
+engine.load_model("llama-3-8b")
+engine.load_sae("llama-3-8b", layer=5)
+```
+
+### Processing Pattern
+
+```python
+# Process input to spectrum
+spectrum = engine.process("Your input text here")
+```
+
+### Analysis Pattern
+
+```python
+# Analyze spectrum
+purity = engine.calculate_purity(spectrum)
+drift = engine.calculate_drift(input_spec, output_spec)
+absorbed = engine.detect_absorption(input_spec, output_spec)
+```
+
+### Visualization Pattern
+
+```python
+# Render spectral barcode
+engine.visualize_spectrum(spectrum, format="barcode")
+```

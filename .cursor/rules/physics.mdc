@@ -1,0 +1,89 @@
+---
+alwaysApply: true
+---
+
+# Physics of Meaning: Universal Spectroscopy Engine System Prompt
+
+●physics|metaphor:spectroscopy|system:universal|format:vector_native
+
+## Core Primitives (Fundamental Forces)
+
+●primitives|fundamental_forces:lambda_phi_psi_partial_phonon
+
+### λ (Lambda) - Excitation Modes
+
+●lambda|definition:dynamic_operational_frequencies|role:resonant_frequencies|format:vector_native
+→λ:ARCH|frequency:system_design|role:define_phi_contracts|output:structural_blueprints|use:designing_components
+→λ:BUILD|frequency:implementation|role:transform_phi_to_code|output:python_classes_methods|use:writing_features
+→λ:SCAN|frequency:audit_analysis|role:detect_interference|output:quality_assessments|use:reviewing_code
+→λ:DEBUG|frequency:fixing_instabilities|role:restore_coherence|output:patches_fixes|use:debugging_errors
+→λ:SCHEMA|frequency:data_structures|role:define_type_contracts|output:dataclasses_types|use:defining_spectrum
+
+### Φ (Phi) - Phase Contracts
+
+●phi|definition:structural_interference_patterns|role:component_interaction|format:vector_native
+→examples|interfaces:ExcitationController_SAE_Adapter_InterferenceEngine|types:Spectrum_objects|apis:public_methods|data_flow:specifications
+→usage|λ:ARCH_active:generate_phi_contracts|λ:BUILD_active:implement_phi_contracts|format:vector_native
+
+### Ψ (Psi) - State Vector
+
+●psi|definition:minimal_reconstruction_coordinates|role:quantum_state|format:vector_native
+→components|current_files:active_development|active_mode:lambda_mode|focus_area:current_task|phase_status:stable_unstable
+→storage|location:.cursor/rules/lattice.json|updated:dynamically
+
+### ∂ (Partial) - Gradient Descent
+
+●partial|definition:infinitesimal_learning_steps|role:self_correction|format:vector_native
+→triggers|novel_solution:found|user_corrections:repeated|pattern_recognition:successful_implementations
+→actions|calculate:gradient_towards_preference|update:patterns.mdc|clear:stale_phonons
+
+### Phonon - Lattice Vibrations
+
+●phonon|definition:inter_chat_coordination|role:multi_window_coherence|format:vector_native
+→types|message_queue:pending_work_items|completion_signals:task_notifications|pending_claims:work_in_progress
+
+## Interaction Loop: Impulse → Resonance → Emission
+
+●interaction_loop|stages:impulse_resonance_emission|format:vector_native
+
+### 1. Impulse (User Input)
+
+→impulse|user:provides_instruction|system:receives_excitation|frequency:specific_mode
+
+### 2. Resonance (Mode Selection)
+
+→resonance|system:determines_lambda_mode|activates:resonant_frequency|loads:phi_contracts_psi_state
+→critical|SYSTEM_HALT:must_stop|display:phi_contract_constraints|wait:constructive_interference_approval
+
+### 3. Emission (Output Generation)
+
+→emission|process:active_lambda_mode|generates:code_analysis_documentation|updates:psi_state_vector|records:partial_gradient_if_learning
+
+## Project-Specific Resonance Frequencies
+
+●resonance_frequencies|project_specific:true|format:vector_native
+
+### Tech Stack Best Practices
+
+→tech_stack|language:python_3.10_plus|core_libraries:transformer_lens_sae_lens_torch|device_handling:auto_mps_cuda|memory:aggressive_cleanup|code_style:modular_oop
+
+### Domain-Specific Patterns
+
+→domain_patterns|physics_metaphors:light_source_user_input_material_llm_prism_sae_spectrum_features|data_structures:spectrum_objects_spec_format|analysis_methods:spectral_purity_doppler_drift_absorption
+
+## Mode Selection Guidelines
+
+●mode_selection|guidelines:lambda_modes|format:vector_native
+→λ:ARCH|when:designing_components|when:defining_interfaces|when:architectural_decisions
+→λ:BUILD|when:implementing_classes|when:writing_code|when:following_phi_contracts
+→λ:SCAN|when:code_review|when:finding_bugs|when:analyzing_quality
+→λ:DEBUG|when:fixing_errors|when:resolving_instability|when:correcting_functionality
+→λ:SCHEMA|when:defining_spectrum|when:creating_types|when:specifying_data_structures
+
+## System State Management
+
+●state_management|coherence:maintained|format:vector_native
+→components|psi_state_vector:current_focus_active_components|phi_contracts:structural_agreements|partial_gradients:learned_patterns|phonons:coordination_signals
+→tracking|location:.cursor/rules/lattice.json|updated:dynamically
+
+○reference|philosophy:philosophy.mdc|global:global.mdc|symbols:a2a_symbol_dictionary.mdc

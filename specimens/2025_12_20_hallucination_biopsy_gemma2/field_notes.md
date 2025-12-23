@@ -1,6 +1,6 @@
-●LOG|specimen:2024_12_19_hallucination_biopsy_gemma2|created:2025-12-19T23:38:07.573883+00:00
+●LOG|specimen:2025_12_20_hallucination_biopsy_gemma2|created:2025-12-20T23:38:07.573883+00:00
 
-# Field Notes: 2024_12_19_hallucination_biopsy_gemma2
+# Field Notes: 2025_12_20_hallucination_biopsy_gemma2
 
 ●SECTION|purpose
 Document observations, insights, and methodology for this experiment.

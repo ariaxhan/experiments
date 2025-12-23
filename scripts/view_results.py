@@ -363,9 +363,23 @@ def print_experiment_specific(df: pl.DataFrame, classification: Dict[str, Any]) 
 def print_manifest_info(storage: SpecimenStorage) -> None:
     """●METHOD|input:SpecimenStorage|output:None|operation:print_manifest_metadata"""
     try:
-        # Try both locations (strata/manifest.msgpack and manifest.msgpack)
-        manifest_path = storage.strata_path / "manifest.msgpack"
+        # Show run information
+        runs = storage.list_runs()
+        if runs:
+            print_header("RUN INFORMATION")
+            print(f"\nCurrent Run: {storage.run_id}")
+            print(f"Total Runs: {len(runs)}")
+            if len(runs) > 1:
+                print(f"\nAll Runs:")
+                for i, run_id in enumerate(runs[:10], 1):  # Show up to 10
+                    print(f"  {i}. {run_id}")
+                if len(runs) > 10:
+                    print(f"  ... and {len(runs) - 10} more")
+        
+        # Try to load manifest from current run
+        manifest_path = storage.run_path / "manifest.msgpack"
         if not manifest_path.exists():
+            # Fallback: try specimen-level manifest
             manifest_path = storage.specimen_path / "manifest.msgpack"
         
         if not manifest_path.exists():
@@ -376,8 +390,13 @@ def print_manifest_info(storage: SpecimenStorage) -> None:
         
         print_header("EXPERIMENT METADATA")
         
+        if "run_id" in manifest:
+            print(f"\nRun ID: {manifest['run_id']}")
+        if "run_timestamp" in manifest:
+            print(f"Run Timestamp: {manifest['run_timestamp']}")
+        
         if "specimen_id" in manifest:
-            print(f"\nSpecimen ID: {manifest['specimen_id']}")
+            print(f"Specimen ID: {manifest['specimen_id']}")
         
         if "taxonomy" in manifest:
             taxonomy = manifest["taxonomy"]
@@ -390,12 +409,16 @@ def print_manifest_info(storage: SpecimenStorage) -> None:
         if "created" in manifest:
             print(f"Created: {manifest['created']}")
         
-        if "completed" in manifest:
-            print(f"Completed: {manifest['completed']}")
+        if "timing" in manifest:
+            timing = manifest["timing"]
+            if "start" in timing:
+                print(f"Start: {timing['start']}")
+            if "end" in timing:
+                print(f"End: {timing['end']}")
         
-        if "summary" in manifest:
-            print("\nSummary:")
-            for key, value in manifest["summary"].items():
+        if "summary_statistics" in manifest:
+            print("\nSummary Statistics:")
+            for key, value in manifest["summary_statistics"].items():
                 print(f"  {key}: {value}")
     
     except Exception as e:
@@ -410,11 +433,19 @@ def view_specimen(specimen_path: Path, json_output: Optional[Path] = None) -> Di
     """●METHOD|input:Path_Path|output:dict|operation:comprehensive_specimen_analysis"""
     storage = SpecimenStorage(specimen_path)
     
-    # Load metrics
+    # Load metrics (from latest run)
     try:
         df = storage.read_metrics()
+        print(f"\n📊 Loading metrics from run: {storage.run_id}")
     except FileNotFoundError as e:
-        print(f"✗ No metrics found at {specimen_path / 'strata' / 'metrics.parquet'}")
+        runs = storage.list_runs()
+        if runs:
+            print(f"✗ No metrics found in current run: {storage.run_id}")
+            print(f"  Available runs: {', '.join(runs[:5])}")
+            if len(runs) > 5:
+                print(f"  ... and {len(runs) - 5} more")
+        else:
+            print(f"✗ No metrics found. No runs exist in {specimen_path / 'runs'}")
         print(f"  Error: {e}")
         return {}
     except Exception as e:

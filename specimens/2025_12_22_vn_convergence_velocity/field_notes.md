@@ -1,6 +1,6 @@
-●LOG|specimen:2024_12_20_vn_convergence_velocity|created:2025-12-20T10:02:13.989224+00:00
+●LOG|specimen:2025_12_22_vn_convergence_velocity|created:2025-12-22T10:02:13.989224+00:00
 
-# Field Notes: 2024_12_20_vn_convergence_velocity
+# Field Notes: 2025_12_22_vn_convergence_velocity
 
 ## Experiment H: Convergence Velocity Test
 

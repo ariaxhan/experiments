@@ -1,6 +1,6 @@
-●LOG|specimen:2024_12_20_vn_noise_robustness|created:2025-12-20T10:02:13.989224+00:00
+●LOG|specimen:2025_12_20_vn_noise_robustness|created:2025-12-20T10:02:13.989224+00:00
 
-# Field Notes: 2024_12_20_vn_noise_robustness
+# Field Notes: 2025_12_20_vn_noise_robustness
 
 ## Experiment F: Noise Robustness Test
 

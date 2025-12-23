@@ -1,6 +1,6 @@
 # Hallucination Biopsy: SAE-Based Differential Diagnosis
 
-**Specimen ID**: `2024_12_19_hallucination_biopsy_gemma2`  
+**Specimen ID**: `2025_12_20_hallucination_biopsy_gemma2`  
 **Domain**: Interpretability  
 **Method**: SAE Analysis  
 **Status**: Active
@@ -22,7 +22,7 @@ pip install transformer_lens sae_lens torch numpy polars zarr msgpack
 
 ```bash
 # Navigate to specimen directory
-cd /Users/ariahan/Documents/ai-research/experiments/specimens/2024_12_19_hallucination_biopsy_gemma2
+cd /Users/ariahan/Documents/ai-research/experiments/specimens/2025_12_20_hallucination_biopsy_gemma2
 
 # Execute protocol
 python protocol.py
@@ -114,7 +114,7 @@ vault = VaultQuery()
 # View all experiments
 results = vault.search("""
     SELECT experiment_name, unique_to_hall_count, energy_diff
-    FROM exp_2024_12_19_hallucination_biopsy_gemma2
+    FROM exp_2025_12_20_hallucination_biopsy_gemma2
     ORDER BY unique_to_hall_count DESC
 """)
 print(results)
@@ -122,7 +122,7 @@ print(results)
 # Find experiments with high energy difference
 results = vault.search("""
     SELECT experiment_name, energy_diff, top_feature_1, top_feature_1_words
-    FROM exp_2024_12_19_hallucination_biopsy_gemma2
+    FROM exp_2025_12_20_hallucination_biopsy_gemma2
     WHERE energy_diff > 0
 """)
 print(results)
@@ -135,7 +135,7 @@ from pathlib import Path
 from protocols.storage import SpecimenStorage
 
 # Load specimen
-specimen_path = Path("specimens/2024_12_19_hallucination_biopsy_gemma2")
+specimen_path = Path("specimens/2025_12_20_hallucination_biopsy_gemma2")
 storage = SpecimenStorage(specimen_path)
 
 # Read metrics
@@ -245,7 +245,7 @@ Subsequent runs use cached models.
 
 ## Metadata
 
-**Created**: 2024-12-19  
+**Created**: 2025-12-20  
 **Tags**: gemma-2-2b, layer_5, hallucination_detection, sae_diagnosis  
 **Dependencies**: transformer_lens, sae_lens, torch, numpy, polars, zarr, msgpack  
 **Storage**: ~320MB (metrics + tensors)

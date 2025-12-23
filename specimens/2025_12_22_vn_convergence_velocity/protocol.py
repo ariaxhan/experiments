@@ -820,7 +820,7 @@ def run_experiment() -> None:
     
     # Update manifest
     manifest = {
-        "specimen_id": "2024_12_20_vn_convergence_velocity",
+        "specimen_id": "2025_12_22_vn_convergence_velocity",
         "created": experiment_start_time,
         "completed": datetime.now().isoformat(),
         "taxonomy": {

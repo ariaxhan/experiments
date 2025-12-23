@@ -76,7 +76,18 @@ def decode_features(
     translations = []
     for feat_id in feature_indices[:top_k]:
         try:
+            # Get feature direction from SAE decoder
             feature_direction = engine.sae_adapter.sae.W_dec[feat_id]
+            
+            # Ensure dtype consistency with model (fix for float16/float32 mismatch)
+            if hasattr(engine.model, 'W_U'):
+                target_dtype = engine.model.W_U.dtype
+            else:
+                target_dtype = next(engine.model.parameters()).dtype
+            
+            feature_direction = feature_direction.to(dtype=target_dtype, device=engine.device)
+            
+            # Project through unembedding to get logits
             logits = engine.model.unembed(feature_direction)
             top_token_ids = logits.argsort(descending=True)[:3]
             top_words = engine.model.to_str_tokens(top_token_ids)
@@ -186,11 +197,19 @@ def run_experiment() -> None:
     """
     experiment_start_time = datetime.now().isoformat()
     
-    # Initialize storage
+    # Initialize storage (creates new run automatically)
     specimen_path = Path(__file__).parent
     storage = SpecimenStorage(specimen_path)
     print(f"●PROCESS|operation:vn_comprehensive_experiments|phase:starting")
-    print(f"  Storage initialized at: {specimen_path}")
+    print(f"  Specimen: {specimen_path.name}")
+    print(f"  Run ID: {storage.run_id}")
+    print(f"  Run directory: {storage.run_path}")
+    
+    # Show previous runs if any
+    previous_runs = storage.list_runs()
+    if len(previous_runs) > 1:  # More than current run
+        print(f"  Previous runs: {len(previous_runs) - 1}")
+        print(f"    Latest: {previous_runs[1] if len(previous_runs) > 1 else 'N/A'}")
     
     print("\n" + "="*80)
     print("COMPREHENSIVE VECTOR-NATIVE EXPERIMENTS")
@@ -417,8 +436,10 @@ def run_experiment() -> None:
         "vn_unique_count": [r["vn_unique_count"] for r in results],
         "nl_unique_count": [r["nl_unique_count"] for r in results],
     }
-    storage.write_metrics(metrics_data)
+    metrics_file = storage.write_metrics(metrics_data)
     print(f"    ✓ Saved {len(results)} test case records")
+    print(f"      Run: {storage.run_id}")
+    print(f"      File: {metrics_file.name}")
     
     # Calculate aggregate statistics for metadata
     by_category = {}
@@ -464,8 +485,10 @@ def run_experiment() -> None:
         "by_category": by_category,
         "by_complexity": by_complexity,
     }
-    storage.write_manifest(metadata)
-    print("    ✓ Saved experiment metadata")
+    manifest_file = storage.write_manifest(metadata)
+    print(f"    ✓ Saved experiment metadata")
+    print(f"      Run: {storage.run_id}")
+    print(f"      File: {manifest_file.name}")
     
     # Summary
     print("\n" + "="*80)

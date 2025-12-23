@@ -557,7 +557,7 @@ def run_experiment() -> None:
     
     # Update manifest
     manifest = {
-        "specimen_id": "2024_12_20_vn_noise_robustness",
+        "specimen_id": "2025_12_20_vn_noise_robustness",
         "created": experiment_start_time,
         "completed": datetime.now().isoformat(),
         "taxonomy": {

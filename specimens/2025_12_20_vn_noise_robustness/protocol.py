@@ -314,6 +314,12 @@ def calculate_reconstruction_loss(
             encoded = engine.sae_adapter.sae.encode(original)
             reconstructed = engine.sae_adapter.sae.decode(encoded)
             
+            # Ensure dtype consistency for MPS compatibility
+            # Match reconstructed dtype to original, or convert both to float32
+            target_dtype = original.dtype
+            reconstructed = reconstructed.to(dtype=target_dtype)
+            original = original.to(dtype=target_dtype)
+            
             # Calculate MSE loss
             mse = torch.nn.functional.mse_loss(reconstructed, original)
             

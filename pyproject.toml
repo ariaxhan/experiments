@@ -14,7 +14,15 @@ dependencies = [
     "torch",
     "matplotlib",
     "plotly",
+    # Visualization dependencies
+    "seaborn>=0.12.0",
+    "scipy>=1.10.0",
+    # Jupyter notebook support
+    "jupyter>=1.0.0",
+    "jupyterlab>=4.0.0",
+    "ipykernel>=6.0.0",
+    "nbformat>=5.0.0",
 ]
 
 [tool.setuptools]
-packages = ["protocols", "scripts", "engines", "engines.universal_spectroscopy", "tests"]
+packages = ["protocols", "scripts", "engines", "engines.universal_spectroscopy", "tests", "notebooks"]

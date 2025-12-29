@@ -431,7 +431,26 @@ def print_manifest_info(storage: SpecimenStorage) -> None:
 
 def view_specimen(specimen_path: Path, json_output: Optional[Path] = None) -> Dict[str, Any]:
     """●METHOD|input:Path_Path|output:dict|operation:comprehensive_specimen_analysis"""
-    storage = SpecimenStorage(specimen_path)
+    # Check for existing runs first
+    runs_path = Path(specimen_path) / "runs"
+    if not runs_path.exists():
+        print(f"✗ No metrics found. No runs exist in {runs_path}")
+        return {}
+    
+    # List existing runs
+    runs = [
+        d.name for d in runs_path.iterdir()
+        if d.is_dir() and (d / "metrics.parquet").exists()
+    ]
+    runs = sorted(runs, reverse=True)
+    
+    if not runs:
+        print(f"✗ No metrics found. No runs exist in {runs_path}")
+        return {}
+    
+    # Use the latest run
+    latest_run_id = runs[0]
+    storage = SpecimenStorage(specimen_path, run_id=latest_run_id)
     
     # Load metrics (from latest run)
     try:
@@ -485,9 +504,16 @@ def view_specimen(specimen_path: Path, json_output: Optional[Path] = None) -> Di
     
     # Export to JSON if requested
     if json_output:
-        with open(json_output, 'w') as f:
+        # If path is relative, save in run folder; if absolute, use as-is
+        if json_output.is_absolute():
+            output_path = json_output
+        else:
+            # Save in run folder
+            output_path = storage.run_path / json_output.name
+        
+        with open(output_path, 'w') as f:
             json.dump(output_data, f, indent=2, default=str)
-        print(f"\n✓ Exported analysis to {json_output}")
+        print(f"\n✓ Exported analysis to {output_path}")
     
     return output_data
 
@@ -583,8 +609,8 @@ Examples:
   # Compare specimens
   python scripts/view_results.py --compare specimen1 specimen2
   
-  # Export to JSON
-  python scripts/view_results.py specimen --json output.json
+  # Export to JSON (saved in run folder)
+  python scripts/view_results.py specimen --json analysis.json
         """
     )
     
@@ -613,7 +639,7 @@ Examples:
         "--json",
         type=Path,
         metavar="OUTPUT",
-        help="Export analysis to JSON file"
+        help="Export analysis to JSON file (saved in run folder if relative path)"
     )
     
     args = parser.parse_args()

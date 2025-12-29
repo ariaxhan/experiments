@@ -19,6 +19,13 @@ Dependencies: transformer_lens, sae_lens, torch, numpy
 from pathlib import Path
 from typing import Dict, List, Tuple
 from datetime import datetime
+import sys
+
+# Add experiments directory to path so protocols module can be imported
+# when running script directly from specimens subdirectory
+_experiments_dir = Path(__file__).parent.parent.parent
+if str(_experiments_dir) not in sys.path:
+    sys.path.insert(0, str(_experiments_dir))
 
 import torch
 import numpy as np
